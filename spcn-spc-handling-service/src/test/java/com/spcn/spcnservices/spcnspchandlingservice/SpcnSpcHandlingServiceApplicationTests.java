@@ -1,10 +1,10 @@
-package com.spcn.spcnservices.spcnspcservice;
+package com.spcn.spcnservices.spcnspchandlingservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpcnSpcServiceApplicationTests {
+class SpcnSpcHandlingServiceApplicationTests {
 
     @Test
     void contextLoads() {

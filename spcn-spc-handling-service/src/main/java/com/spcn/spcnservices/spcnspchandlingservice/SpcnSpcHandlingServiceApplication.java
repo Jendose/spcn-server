@@ -1,13 +1,13 @@
-package com.spcn.spcnservices.spcnspcservice;
+package com.spcn.spcnservices.spcnspchandlingservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpcnSpcServiceApplication {
+public class SpcnSpcHandlingServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpcnSpcServiceApplication.class, args);
+        SpringApplication.run(SpcnSpcHandlingServiceApplication.class, args);
     }
 
 }
