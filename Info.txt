@@ -1,0 +1,638 @@
+Модули:
+DAS - com.spcn.spcn-services:spcn-data-access-service - для модели и репозиториев
+CJS - com.spcn.spcn-services:spcn-cron-jobs-service - для создания расписаний
+SHS - com.spcn.spcn-services:spcn-spc-handling-service - для работы с spc (вызов и работа с данными)
+API - com.spcn.spcn-services:spcn-api - логика для мобилки
+
+
+
+=====================================
+МОДУЛЬ DAS (spcn-data-access-service)
+=====================================
+
+КОНТРОЛЛЕРЫ DAS
+
+// Правила:
+// Один метод – один запрос к бд
+// Отдельные SQL запросы для получения полей записей (без запрашивания объектов целиком)
+
+UserController
+
+DAS-1C  Добавление записи в таблицу usr
+        POST /users
+        saveUser
+        >> RequestBody: User user
+        << ResponseBody: Long userId
+
+DAS-2C  Проверка наличия записи по полю email в таблице usr
+        GET /users/existence
+        doesUserWithEmailExist
+        >> RequestParam: String email
+        << ResponseBody: Boolean userExist
+
+DAS-3C  Поиск записи по полю email в таблице usr
+        GET /users
+        getUserByEmail
+        >> RequestParam: String email
+        << ResponseBody: User user
+
+DAS-4C  Поиск записи по полю id в таблице usr
+        GET /users/{userId}
+        getUserById
+        >> PathVariable: Long userId
+        << ResponseBody: User user
+
+DAS-5C  Получение поля id по полю email в таблице usr
+        GET /users/userId
+        getIdByEmail
+        >> PathVariable: String email
+        << RequestParam: Long userId
+
+DAS-55C Получение поля name по полю email в таблице usr
+        GET /users/name
+        getNameByEmail
+        >> RequestParam: String email
+        << ResponseBody: String name
+
+DAS-6C  Получение поля email по полю id в таблице usr
+        GET /users/{userId}/email
+        getEmailById
+        >> PathVariable: Long userId
+        << ResponseBody: String email
+
+DAS-7C  Получение поля password по полю id в таблице usr
+        GET /users/{userId}/password
+        getPasswordById
+        >> PathVariable: Long userId
+        << ResponseBody: String password
+
+DAS-8C  Получение поля isDependent по полю id в таблице usr
+        GET /users/{userId}/dependency
+        getDependencyById
+        >> PathVariable: Long userId
+        << ResponseBody: Boolean isDependent
+
+DAS-9C  Обновление поля isDependent по полю id в таблице usr
+        PUT /users/{userId}/dependency
+        updateDependencyById
+        >> PathVariable: Long userId, RequestBody: Boolean isDependent
+        << ResponseBody: Boolean success
+
+DAS-10C Обновление поля password по полю email в таблице usr
+        PUT /users/password
+        updatePasswordByEmail
+        >> RequestParam: String email, RequestBody: String password
+        << ResponseBody: Boolean success
+
+DAS-11C Обновление поля name по полю id в таблице usr
+        PUT /users/{userId}/name
+        updateNameById
+        >> PathVariable: Long userId, RequestBody: String name
+        << ResponseBody: Boolean success
+
+MonitoringController
+
+DAS-12C Добавление записи в таблицу monitoring
+        POST /monitoring
+        saveMonitoring
+        >> RequestBody: Monitoring monitoring
+        << ResponseBody: -
+
+DAS-13C Проверка наличия записей по полю spcOwner в таблице monitoring
+        GET /monitoring/{spcOwner}/existence
+        doesMonitoringWithSpcOwnerExist
+        >> PathVariable: Long spcOwner
+        << ResponseBody: Boolean monitoringExist
+
+DAS-14C Получение поля caretaker по полям spcOwner и isHost в таблице monitoring
+        GET /monitoring/{spcOwner}/host
+        getCaretakerBySpcOwnerAndIsHost
+        >> PathVariable: Long spcOwner, RequestBody: Boolean isHost
+        << ResponseBody: Long caretaker
+
+CourseController
+
+DAS-15C Добавление записи в таблицу course
+        POST /courses
+        saveCourse
+        >> RequestBody: Course course
+        << ResponseBody: Long courseId
+
+DAS-16C Удаление записи из таблицы course
+        DELETE /courses/{courseId}
+        deleteCourse
+        >> PathVariable: Long courseId
+        << ResponseBody: Boolean success
+
+DAS-17C Получение массива значений поля id по всем записям в таблице course
+        GET /courses/ids
+        getAllCoursesIds
+        >> RequestBody: -
+        << ResponseBody: List<Long> allCoursesIds
+
+DAS-18C Получение поля spc по полю id в таблице course, получение поля ip
+        GET /courses/{courseId}/spc/ip
+        getSpcIpById
+        >> PathVariable: Long courseId
+        << ResponseBody: String spcIp
+
+DAS-19C Получение поля takeDurationSec по полю id таблице course
+        GET /courses/{courseId}/takeDurationSec
+        getTakeDurationSecById
+        >> PathVariable: Long courseId
+        << ResponseBody: Integer takeDurationSec
+
+TakeController
+
+DAS-20C Добавление записи в таблицу take
+        POST /takes
+        saveTake
+        >> RequestBody: Take take
+        << ResponseBody: Long takeId
+
+DAS-21C Поиск записей по полю course в таблице take
+        GET /takes
+        getTakesByCourseId
+        >> RequestBody: Long courseId
+        << ResponseBody: List<Take> takes
+
+DAS-22C Обновление поля taken по полю id в таблице take
+        PUT /takes/{takeId}/taken
+        updateTakenById
+        >> PathVariable: Long takeId, RequestBody: Boolean taken
+        << ResponseBody: Boolean success
+
+DAS-23C Обновление поля takeStatus по полю id в таблице take
+        PUT /takes/{takeId}/takeStatus
+        updateTakeStatusById
+        >> PathVariable: Long takeId, RequestBody: TakeStatus takeStatus
+        << ResponseBody: Boolean success
+
+SpcController
+
+DAS-24C Добавление записи в таблицу spc
+        POST /spc
+        saveSpc
+        >> RequestBody: Spc spc
+        << ResponseBody: -
+
+DAS-25C Проверка наличия записи по полю serialNumber в таблице spc
+        GET /spc/existence
+        doesSpcWithSerialNumberExist
+        >> RequestParam: String serialNumber
+        << ResponseBody: Boolean spcExist
+
+DAS-26C Проверка наличия поля user по полю serialNumber в таблице spc
+        GET /spc/user/existence
+        doesSpcWithSerialNumberHaveUser
+        >> RequestParam: String serialNumber
+        << ResponseBody: Boolean spcHasUser
+
+DAS-27C Получение поля ip по полю serialNumber в таблице spc
+        GET /spc/ip
+        getIpBySerialNumber
+        >> RequestParam: String serialNumber
+        << ResponseBody: String spcIp
+
+DAS-28C Обновление поля user по полю serialNumber в таблице spc
+        PUT /spc/user
+        updateUserBySerialNumber
+        >> RequestParam: String serialNumber, RequestBody: Long userId
+        << ResponseBody: Boolean success
+
+DAS-29C Очистка поля user по полю serialNumber в таблице spc
+        PUT /spc/user/cleaning
+        cleanUserBySerialNumber
+        >> RequestParam: String serialNumber
+        << ResponseBody: Boolean success
+
+
+===================================
+МОДУЛЬ CJS (spcn-cron-jobs-service)
+===================================
+
+СЕРВИСЫ CJS
+
+TimetableService
+
+CJS-1S  Создание крон-сценариев для курса
+        setCronJobForCourse(Long courseId)
+        -
+        - void
+
+CJS-2S  Создание крон-сценариев для всех курсов
+        setCronJobsForAllCourses()
+        - List<Long> allCoursesIds = запрос DAS-17
+        - for(Long courseId : allCoursesIds) {
+            Вызов CJS-1S: courseId
+          }
+        - void
+
+КОНТРОЛЛЕРЫ CJS
+
+TimetableController
+
+CJS-1C  Создание крон-сценариев для курса
+    POST /{courseId}
+        setCronJobForCourse
+        >> PathVariable: Long courseId
+        << ResponseBody: Boolean success
+
+ГЛАВНЫЙ КЛАСС CJS
+
+CJS-2M  Создание крон-сценариев для всех курсов
+        run
+        - Вызов CJS-2S
+
+
+======================================
+МОДУЛЬ SHS (spcn-spc-handling-service)
+======================================
+
+--- СЕРВИСЫ ---
+
+SpcWaitingService
+
+waitingToBeSaved - статический массив пар (String spcIp, TakeInfo {Long takeId, boolean possiblyLost} takeInfo)
+
+SHS-1S  Добавление элемента в массив waitingToBeSaved
+        addWaiting(String spcIp, TakeInfo takeInfo)
+        -void
+
+SHS-2S  Получение takeId из массива waitingToBeSaved по spcIp
+        getWaiting(String spcIp)
+        - return takeInfo
+
+SHS-3S  Удаление элемента из массива waitingToBeSaved по spcIp
+        deleteWaiting(String spcIp)
+        -void
+
+SpcRequestsService
+
+SHS-4S  Вызов оповещающего сигнала дозатора
+        startTake(Long courseId)
+        - String spcIp = запрос DAS-18: courseId
+        TakeInfo takeInfo = вызов SHS-1-2: spcIp
+        // Ожидание завершения предыдующего приема - убрать
+        - while (takeInfo != null) {
+            takeInfo = вызов SHS-1-2: spcIp
+            TimeUnit.SECONDS.sleep(600)
+          }
+        - int takeDurationSec = запрос DAS-19: courseId
+        - int pauseSec = takeDurationSec > 60 ? (takeDurationSec < 1800 ? takeDurationSec/6 : 300 ) : 10
+        - int iterations = takeDurationSec/pauseSec
+        - boolean success = false
+        - for(int i = 0; i<iterations; i++){
+            try {
+                Запрос по адресу spcIp/1
+            }
+            catch (HttpStatusCodeException e) {
+                Вызов SHS-1-1: spcIp, {takeId, true}
+                TimeUnit.SECONDS.sleep(pauseSec)
+                continue
+            }
+            success = true
+            break
+          }
+        - if (success) {
+            Long takeId = запрос DAS-20:
+                take {
+                    course = getById(courseId)
+                    date = текущая дата
+                    takeStatus = WAIT
+                }
+            Вызов SHS-1-1: spcIp, {takeId, false}
+          }
+          else {
+            DAS-23: takeId, TakeStatus.LOST
+            Вызов SHS-1-3: spcIp
+          }
+        - void
+
+SHS-5S  Получение данных с дозатора
+        endTake(Long courseId)
+        - String spcIp = запрос DAS-18: courseId
+        - try {
+            Запрос по адресу spcIp/0
+          }
+          catch (HttpStatusCodeException e) {
+            TakeInfo takeInfo = вызов SHS-1-2: spcIp
+            if (possiblyLost) {
+                DAS-23: takeInfo.takeId, TakeStatus.LOST
+                Вызов SHS-1-3: spcIp
+            }
+            else {
+                int takeDurationSec = запрос DAS-19: courseId
+                int pauseSec = takeDurationSec > 60 ? (takeDurationSec < 1800 ? takeDurationSec/6 : 300 ) : 10
+                int iterations = takeDurationSec/pauseSec
+                TimeUnit.SECONDS.sleep(pauseSec)
+                endTakeWhenConnectionIsLost(iterations, pauseSec, spcIp, takeInfo.takeId)
+            }
+          }
+        - void
+
+SHS-6S Цикл запроса на получение данных с дозатора в случае, когда дозатор был отключен от сети после начала приема
+        endTakeWhenConnectionWasLost(iterations, pauseSec, spcIp, takeId)
+        boolean success = false
+        // Запрос повтояется iterations раз с периодом в pauseSec
+        - for(int i = 0; i<iterations; i++){
+            try {
+                Запрос по адресу spcIp/0
+            }
+            catch (HttpStatusCodeException e) {
+                TimeUnit.SECONDS.sleep(pauseSec)
+                continue
+            }
+            success = true
+            break
+          }
+        - if (!success) {
+            DAS-23: takeId, TakeStatus.LOST
+            Вызов SHS-1-3: spcIp
+          }
+        - void
+
+SpcDataService
+
+SHS-7S  Обработка ответа на запрос на получение данных с дозатора
+        saveData(Integer gercon, String spcIp)
+        - boolean taken = gercon > 0
+        - TakeInfo takeInfo = вызов SHS-1-2: spcIp
+        - if (takeInfo != null) {
+            DAS-22: takeInfo.takeId, taken
+            DAS-23: takeInfo.takeId, TakeStatus.OK
+            Вызов SHS-1-3: spcIp
+          }
+        - void
+
+--- КОНТРОЛЛЕРЫ ---
+
+SpcDataController
+
+SHS-7C  Обработка ответа на запрос на получение данных с дозатора - получение ip адреса источника запроса (HttpServletRequest, request.getRemoteAddr()), получение takeId из массива waitingToBeSaved по spcIp, (takeId != null) ? (обновление поля taken у записи в таблице take где id==takeId, обновление поля takeStatus на OK у записи в таблице take где id==takeId, удаление элемента из массива waitingToBeSaved по spcIp) : (ничего)
+        saveData
+        POST /saveData
+        >> RequestParam: Integer gercon
+        << HttpStatus
+
+SpcRegistrationController
+
+SRS-8   Регистрация дозатора - добавление записи в таблицу spc
+        POST /
+        saveSpc
+        >> String serialNumber
+        << HttpStatus
+
+SpcExternalRequestsController
+
+SRS-9   Вызов оповещающего сигнала дозатора
+        
+
+
+
+=====================
+МОДУЛЬ API (spcn-api)
+=====================
+
+--- СЕРВИСЫ ---
+
+UserApiService
+
+API-1S  Регистрация пользователя
+        registerUser(RegisterUserRequestDto data)
+        - Boolean userExist = запрос DAS-2: data.email
+        - if (!userExist) {
+            data -> UserDasDto user // UserApiToDasMapper
+            Long userId = запрос DAS-1: user
+          }
+        - else { ошибка UserAlreadyExistsException }
+        - return new RegisterUserResponseDto(userId)
+
+API-2S  Авторизация пользователя
+        authUser(AuthUserRequestDto data)
+        - UserDasDto user = запрос DAS-3: data.email
+        - if (user != null) {
+            if (password совпадает) { user -> UserApiDto userDto // UserDasToApiMapper }
+            else { ошибка InvalidUserPasswordException }
+          }
+          else { ошибка UserNotFoundException }
+        - return userDto
+
+API-3S  Отправка кода для подтверждения восстановления пароля пользователя
+        handlePasswordRecovery(String email)
+        - Boolean userExist = запрос DAS-2: email
+        - if (userExist) { отправка письма с кодом code на email }
+          else { ошибка IncorrectUserEmailException }
+        - return code
+
+API-4S  Изменение пароля пользователя
+        changePassword(ChangePasswordRequestDto data)
+        - Boolean success = запрос DAS-10: data.email
+        - if (!success) { ошибка IncorrectUserEmailException }
+        - void
+
+API-5S  Изменение имени пользователя
+        updateName(Long userId, String name)
+        - Запрос DAS-11: userId
+        - void
+
+API-6S  Изменение зависимости пользователя
+        updateDependency(Long userId, Boolean isDependent)
+        - Запрос DAS-9: userId, isDependent
+        - void
+
+API-7S  Получение пользователя
+        getUser(Long userId)
+        - UserDasDto user = запрос DAS-4: userId
+        - user -> UserApiDto userDto
+        - return userDto
+
+MonitoringApiService
+
+API-8S  Связывание пользователей
+        saveMonitoring(SaveMonitoringRequestDto data)
+        - data -> MonitoringDasDto monitoring
+        - Boolean spcOwnerIsDependent = запрос DAS-8 getDependencyById: data.spcOwnerId
+        - if (spcOwnerIsDependent) {
+             Boolean monitoringOfSpcOwnerExist = запрос DAS-13: data.spcOwnerId
+             if (!monitoringOfSpcOwnerExist) { monitoring.isHost = true }
+          }
+        - Запрос DAS-12: monitoring
+        - void
+
+API-9S  Отправка кода для подтверждения опеки над зарегистрированным пользователем
+        handleMonitoringNotification(String email)
+        - Long spcOwnerId = запрос DAS-5: email
+        - if (spcOwnerId != null) {
+            Boolean isDependent = DAS-8: spcOwnerId
+            if (!isDependent) { отправка письма с кодом code на email }
+            else {
+                Long hostCaretakerId = запрос DAS-14: spcOwnerId, true
+                String hostCaretakerEmail = запрос DAS-6: hostCaretakerId
+                отправка письма с кодом code на hostCaretakerEmail
+            }
+          }
+          else { ошибка IncorrectUserEmailException }
+        - void
+
+CourseApiService
+
+API-10S Добавление курса
+        saveCourse(SaveCourseRequestDto data)
+        - data -> CourseDasDto course // CourseApiToDasMapper
+        - Long courseId = запрос DAS-15: course
+        - return courseId
+
+API-11S Удаление курса
+        deleteCourse(Long courseId)
+        - Boolean success = запрос DAS-16: courseId
+        - void
+
+API-12S Получение статистики по курсу
+        getCourseStatistics(Long courseId)
+        - List<Take> takes = запрос DAS-21: courseId
+        - takes -> List<TakeApiDto> takeDtoList // TakeListDasToApiMapper
+        - return takeDtoList
+
+SpcApiService
+
+API-13S Связывание дозатора и пользователя
+        updateUser(String serialNumber, Long userId)
+        - boolean success = запрос DAS-28: serialNumber, userId
+        - if (!success) { ошибка SpcNotFoundException }
+        - void
+
+API-14S Разрыв связи дозатора и пользователя
+        cleanUserBySerialNumber(String serialNumber)
+        - boolean success = запрос DAS-29: serialNumber
+          if (!success) { ошибка SpcNotFoundException }
+        - void
+
+API-15S Получение данных о существовании связи дозатора и пользователя
+        isScpOwned(String serialNumber)
+        - Boolean spcExist = запрос DAS-25: serialNumber
+        - if (spcExist) {
+            Boolean isSpcOwned = запрос DAS-26: serialNumber
+          }
+          else { ошибка SpcNotFoundException }
+        - Boolean isSpcOwned
+
+API-16S Вызов оповещающего сигнала дозатора
+        testConnection(String serialNumber)
+        - Boolean spcExist = запрос DAS-25: serialNumber
+        - if (spcExist) {
+            String spcIp = запрос DAS-27: serialNumber
+            try { Запрос SHS-9: serialNumber }
+            catch (HttpStatusCodeException e) { return false }
+            TimeUnit.SECONDS.sleep(10)
+            try { Запрос SHS-10: serialNumber }
+            catch (HttpStatusCodeException e) { return false }
+          }
+          else { ошибка SpcNotFoundException }
+        - return true
+
+--- КОНТРОЛЛЕРЫ ---
+
+UserController
+
+API-1C  Регистрация пользователя - проверка наличия записи по полю email в таблице usr, запись не найдена ? (добавление записи в таблицу usr) : (ошибка "такой пользовател уже существует")
+        POST /users/registration
+        registerUser
+        >> RequestBody: RegisterUserRequestDto {String username, String email, String password, Boolean isDependent}
+        << ResponseBody: RegisterUserResponseDto {Long userId} | UserAlreadyExistsException {String error}, HttpStatus
+
+API-2C  Авторизация пользователя - поиск записи по полю email в таблице usr, запись найдена ? (password совпадает ? (сборка объекта пользователя) : (ошибка "неверный пароль")) : (ошибка "такого пользователя не существует")
+        POST /users/auth
+        authUser
+        >> RequestBody: AuthUserRequestDto {String email, String password}
+        << ResponseBody: UserApiDto {//Поля пользователя} | UserNotFoundException {String error} | InvalidUserPasswordException {String error}, HttpStatus
+
+API-3C  Отправка кода для подтверждения восстановления пароля пользователя - проверка наличия записи по полю email в таблице usr, запись найдена ? (отправка письма с кодом на email) : (ошибка "неверный email")
+        POST /users/passwordRecovery
+        handlePasswordRecovery
+        >> RequestBody: String email
+        << ResponseBody: HandlePasswordRecoveryResponseDto {String code} | IncorrectUserEmailException {String error}, HttpStatus
+
+API-4C  Изменение пароля пользователя - проверка наличия записи по полю email в таблице usr, запись найдена ? (обновление поля password по полю email в таблице usr) : (ошибка "неверный email")
+        PUT /users/passwordChange
+        changePassword
+        >> RequestBody: ChangePasswordRequestDto {String email, String password}
+        << ResponseBody: HttpStatus
+
+API-5C  Изменение имени пользователя – обновление поля name по полю id в таблице usr
+        PUT /users/{userId}/nameUpdate
+        updateName
+        >> PathVariable: Long userId, RequestBody: String name
+        << HttpStatus
+
+API-6C  Изменение зависимости пользователя - обновление поля isDependent по полю userId в таблице usr
+        PUT /users/{userId}/dependencyUpdate
+        updateDependency
+        >> PathVariable: Long userId, RequestBody: Boolean isDependent
+        << HttpStatus
+
+API-7C  Получение пользователя - поиск записи по полю id в таблице usr, сборка объекта пользователя
+        GET /user/{userId}
+        getUser
+        >> PathVariable: Long userId
+        << ResponseBody: UserApiDto {//Поля пользователя}, HttpStatus
+
+MonitoringController
+
+API-8C  Связывание пользователей - поиск записи в таблице usr где userId==spcOwnerId, isDependent==false ? (добавление записи в таблицу monitoring) : (поиск записи в таблице monitoring где spcOwner==spcOwnerId, записи не найдены ? (добавление записи в таблицу monitoring со значением true поля isHost) : (добавление записи в таблицу monitoring))
+        POST /monitoring
+        saveMonitoring
+        >> RequestBody: SaveMonitoringRequestDto {Long caretakerId, Long spcOwnerId}
+        << HttpStatus
+
+API-9C  Отправка кода для подтверждения опеки над зарегистрированным пользователом - проверка наличия записи по полю email в таблице usr, запись найдена ? (получение поля id (userId) по полю email в таблице usr, получение поля isDependent по полю id в таблице usr, isDependent==false ? (отправка письма с кодом на email) : (получение поля caretaker (hostCaretakerId) в таблице monitoring где spcOwner==userId && isHost==true, получение поля email (hostCaretakerEmail) в таблице usr где id==hostCaretakerId, отправка письма с кодом на hostCaretakerEmail)) : (ошибка "неверный email")
+        POST /monitoring/notification     
+        handleMonitoringNotification
+        >> RequestBody: String email
+        << ResponseBody: HandleMonitoringNotificationResponseDto {String code, String addresseeEmail, String addresseeName, Long spcOwnerId}, HttpStatus
+
+CourseController
+
+API-10C Добавление курса - добавление записи в таблицу course
+        POST /courses
+        saveCourse
+        >> RequestBody: SaveCourseRequestDto {CourseDto course, Long userId}
+        << ResponseBody: Long courseId, HttpStatus
+
+API-11C Удаление курса - удаление записи из таблицы course
+        DELETE /courses/{courseId}
+        deleteCourse
+        >> PathVariable: Long courseId
+        << HttpStatus
+
+API-12C Получение статистики по курсу - поиск записей по полю course в таблице take, сборка списка тейков
+        GET /courses/{courseId}/statistics
+        getCourseStatistics
+        >> PathVariable: Long courseId
+        << ResponseBody: List<TakeApiDto> takes, HttpStatus
+
+SpcController
+
+API-13C Связывание дозатора и пользователя - проверка наличия записи по полю serialNumber в таблице spc, запись найдена ? (обновление поля user по полю serialNumber в таблице spc) : (ошибка "дозатор не найден")
+        PUT /spc/{serialNumber}/spcOwnerUpdate
+        updateUser
+        >> PathVariable: String serialNumber, RequestBody: Long userId
+        << SpcNotFoundException {String error}, HttpStatus
+
+API-14C Разрыв связи дозатора и пользователя - проверка наличия записи по полю serialNumber в таблице spc, запись найдена ? (обновление поля user на null по полю serialNumber в таблице spc) : (ошибка "дозатор не найден")
+        PUT /spc/{serialNumber}/spcOwnerClean
+        cleanUserBySerialNumber
+        >> PathVariable: String serialNumber
+        << SpcNotFoundException {String error}, HttpStatus
+
+API-15C Получение данных о существовании связи дозатора и пользователя - проверка наличия записи по полю serialNumber в таблице spc, запись найдена ? (проверка поля user на null) : (ошибка "дозатор не найден")
+        GET /spc/{serialNumber}/ownership
+        isScpOwned
+        >> PathVariable: String serialNumber
+        << ResponseBody: Boolean isSpcOwned | SpcNotFoundException {String error}, HttpStatus
+
+API-16C Вызов оповещающего сигнала дозатора - проверка наличия записи по полю serialNumber в таблице spc, запись найдена ? (получение поля ip (spcIp) по полю serialNumber в таблице spc, отправка запроса на включение сигнала на spcIp, отправка запроса через 10 секунд на отключение сигнала на spcIp) : (ошибка "дозатор не найден")
+        POST /spc/{serialNumber}/connectionTest
+        testConnection
+        >> PathVariable: String serialNumber
+        << SpcNotFoundException {String error}, HttpStatus
