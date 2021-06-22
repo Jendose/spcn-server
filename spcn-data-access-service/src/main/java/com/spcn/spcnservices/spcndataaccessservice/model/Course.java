@@ -28,10 +28,10 @@ public class Course {
     @JoinColumn(name = "spc_id", referencedColumnName = "id", nullable = false)
     private Spc spc;
     private String medicine;
-    @Cascade(CascadeType.PERSIST)
+    @Cascade({CascadeType.PERSIST, CascadeType.DELETE})
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "course")
     private Set<Time> timetable = new HashSet<>();
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "course")
     private Set<Take> takeSet = new HashSet<>();
     private LocalDate dateStarted;
