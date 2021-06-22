@@ -9,4 +9,7 @@ public class HandleMonitoringNotificationResponseDto {
     String addresseeName;
     Long spcOwnerId;
 
+    public HandleMonitoringNotificationResponseDto(String code) {
+        this.code = code;
+    }
 }

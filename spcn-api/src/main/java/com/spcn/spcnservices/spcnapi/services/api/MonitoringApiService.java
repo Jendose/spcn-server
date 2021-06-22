@@ -2,10 +2,13 @@ package com.spcn.spcnservices.spcnapi.services.api;
 
 import com.spcn.spcnservices.spcnapi.dtos.api.monitoring.HandleMonitoringNotificationResponseDto;
 import com.spcn.spcnservices.spcnapi.dtos.api.monitoring.SaveMonitoringRequestDto;
+import com.spcn.spcnservices.spcnapi.dtos.api.user.HandlePasswordRecoveryResponseDto;
 import com.spcn.spcnservices.spcnapi.dtos.das.MonitoringDasDto;
 import com.spcn.spcnservices.spcnapi.dtos.das.UserDasDto;
+import com.spcn.spcnservices.spcnapi.exceptions.IncorrectUserEmailException;
 import com.spcn.spcnservices.spcnapi.services.das.MonitoringDasService;
 import com.spcn.spcnservices.spcnapi.services.das.UserDasService;
+import com.spcn.spcnservices.spcnapi.utils.CodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +56,15 @@ public class MonitoringApiService {
      * API-9S  Отправка кода для подтверждения опеки над зарегистрированным пользователом
      * */
     public HandleMonitoringNotificationResponseDto handleMonitoringNotification(String email){
-        return null;
+        Boolean userExist = userDasService.doesUserWithEmailExist(email);
+        if (userExist) {
+            String code = CodeGenerator.getRandomCode();
+            // Тут должна быть сложная логика по поиску нужного емайла,
+            // отправка письма на емайл
+            // и заполнение дтошки целиком
+            return new HandleMonitoringNotificationResponseDto(code);
+        }
+        else throw new IncorrectUserEmailException();
     }
 
 }

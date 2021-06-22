@@ -37,7 +37,7 @@ public class CourseController {
      * */
     @DeleteMapping("/courses/{courseId}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId){
-        boolean success = courseApiService.deleteCourse(courseId);
+        courseApiService.deleteCourse(courseId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

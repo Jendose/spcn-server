@@ -1,5 +1,6 @@
 package com.spcn.spcnservices.spcnapi.controllers;
 
+import com.spcn.spcnservices.spcnapi.dtos.api.spc.UpdateUserRequestDto;
 import com.spcn.spcnservices.spcnapi.services.api.SpcApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,8 @@ public class SpcController {
      *          (ошибка "дозатор не найден")
      * */
     @PutMapping("/spc/spcOwnerUpdate")
-    public ResponseEntity<Void> updateUser(@RequestParam(value = "serialNumber") String serialNumber, @RequestBody Long userId){
-        spcApiService.updateUser(serialNumber, userId);
+    public ResponseEntity<Void> updateUser(@RequestParam(value = "serialNumber") String serialNumber, @RequestBody UpdateUserRequestDto data){
+        spcApiService.updateUser(serialNumber, data.getUserId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -63,7 +64,7 @@ public class SpcController {
      * */
     @PostMapping("/spc/connectionTest")
     public ResponseEntity<Void> testConnection(@RequestParam(value = "serialNumber") String serialNumber){
-        spcApiService.testConnection(serialNumber); // Тут есть нюансы: невозможно точно узнать в чем проблема
+        spcApiService.testConnection(serialNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     

@@ -1,5 +1,6 @@
 package com.spcn.spcnservices.spcnapi.controllers;
 
+import com.spcn.spcnservices.spcnapi.dtos.api.monitoring.HandleMonitoringNotificationRequestDto;
 import com.spcn.spcnservices.spcnapi.dtos.api.monitoring.HandleMonitoringNotificationResponseDto;
 import com.spcn.spcnservices.spcnapi.dtos.api.monitoring.SaveMonitoringRequestDto;
 import com.spcn.spcnservices.spcnapi.services.api.MonitoringApiService;
@@ -47,10 +48,8 @@ public class MonitoringController {
      *          (ошибка "неверный email")
      * */
     @PostMapping("/monitoring/notification")
-    public ResponseEntity<HandleMonitoringNotificationResponseDto> handleMonitoringNotification(@RequestBody String email){
-        // Адвайс
-        // Указан неверный адрес электронной почты
-        return new ResponseEntity<>(monitoringApiService.handleMonitoringNotification(email), HttpStatus.OK);
+    public ResponseEntity<HandleMonitoringNotificationResponseDto> handleMonitoringNotification(@RequestBody HandleMonitoringNotificationRequestDto data){
+        return new ResponseEntity<>(monitoringApiService.handleMonitoringNotification(data.getEmail()), HttpStatus.OK);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.spcn.spcnservices.spcnapi.services.api;
 
+import com.spcn.spcnservices.spcnapi.dtos.api.spc.UpdateUserRequestDto;
 import com.spcn.spcnservices.spcnapi.exceptions.SpcNotFoundException;
 import com.spcn.spcnservices.spcnapi.exceptions.UnexpectedException;
 import com.spcn.spcnservices.spcnapi.services.das.SpcDasService;

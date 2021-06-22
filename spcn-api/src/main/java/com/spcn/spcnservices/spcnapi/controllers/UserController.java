@@ -51,8 +51,8 @@ public class UserController {
      *          (ошибка "неверный email")
      * */
     @PostMapping("/users/passwordRecovery")
-    public ResponseEntity<HandlePasswordRecoveryResponseDto> handlePasswordRecovery(@RequestBody String email){
-        return new ResponseEntity<>(userApiService.handlePasswordRecovery(email), HttpStatus.OK);
+    public ResponseEntity<HandlePasswordRecoveryResponseDto> handlePasswordRecovery(@RequestBody HandlePasswordRecoveryRequestDto data){
+        return new ResponseEntity<>(userApiService.handlePasswordRecovery(data.getEmail()), HttpStatus.OK);
     }
 
     /**
@@ -73,8 +73,8 @@ public class UserController {
      *          обновление поля name по полю id в таблице usr
      * */
     @PutMapping("/users/{userId}/nameUpdate")
-    public ResponseEntity<Void> updateName(@PathVariable Long userId, @RequestBody String name){
-        userApiService.updateName(userId, name);
+    public ResponseEntity<Void> updateName(@PathVariable Long userId, @RequestBody UpdateNameRequestDto data){
+        userApiService.updateName(userId, data.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -83,8 +83,8 @@ public class UserController {
      *          обновление поля isDependent по полю id в таблице usr
      * */
     @PutMapping("/users/{userId}/dependencyUpdate")
-    public ResponseEntity<Void> updateDependency(@PathVariable Long userId, @RequestBody Boolean isDependent){
-        userApiService.updateDependency(userId, isDependent);
+    public ResponseEntity<Void> updateDependency(@PathVariable Long userId, @RequestBody UpdateDependencyRequestDto data){
+        userApiService.updateDependency(userId, data.getIsDependent());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

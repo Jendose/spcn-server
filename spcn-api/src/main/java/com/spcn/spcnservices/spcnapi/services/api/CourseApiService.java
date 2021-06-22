@@ -52,8 +52,9 @@ public class CourseApiService {
      *         - Boolean success = запрос DAS-16: courseId
      *         - return success
      * */
-    public Boolean deleteCourse(Long courseId){
-        return null;
+    public void deleteCourse(Long courseId){
+        boolean success = courseDasService.deleteCourse(courseId);
+        if (!success) throw new UnexpectedException();
     }
 
     /**
