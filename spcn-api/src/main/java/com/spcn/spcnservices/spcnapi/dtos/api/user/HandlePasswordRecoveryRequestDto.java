@@ -7,4 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class HandlePasswordRecoveryRequestDto {
     private String email;
+
+    public HandlePasswordRecoveryRequestDto() {
+    }
 }

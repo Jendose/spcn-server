@@ -8,4 +8,6 @@ import lombok.Data;
 public class UpdateNameRequestDto {
     private String name;
 
+    public UpdateNameRequestDto() {
+    }
 }

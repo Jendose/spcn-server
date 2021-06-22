@@ -8,4 +8,6 @@ import lombok.Data;
 public class HandlePasswordRecoveryResponseDto {
     private String code;
 
+    public HandlePasswordRecoveryResponseDto() {
+    }
 }

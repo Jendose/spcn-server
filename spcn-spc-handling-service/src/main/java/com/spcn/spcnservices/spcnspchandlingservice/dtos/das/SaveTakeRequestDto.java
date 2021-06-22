@@ -8,4 +8,7 @@ import lombok.Data;
 public class SaveTakeRequestDto {
     Long courseId;
     TakeDasDto take;
+
+    public SaveTakeRequestDto() {
+    }
 }

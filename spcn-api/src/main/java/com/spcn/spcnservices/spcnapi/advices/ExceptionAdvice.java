@@ -14,6 +14,9 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @AllArgsConstructor
     private static class ErrorResponse {
         private String error;
+
+        public ErrorResponse() {
+        }
     }
 
     @ExceptionHandler({UserAlreadyExistsException.class, UserNotFoundException.class, InvalidUserPasswordException.class, IncorrectUserEmailException.class, SpcNotFoundException.class, UnexpectedException.class})

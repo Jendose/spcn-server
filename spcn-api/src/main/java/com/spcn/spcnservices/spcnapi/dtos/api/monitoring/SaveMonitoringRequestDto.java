@@ -9,4 +9,6 @@ public class SaveMonitoringRequestDto {
     Long caretakerId;
     Long spcOwnerId;
 
+    public SaveMonitoringRequestDto() {
+    }
 }

@@ -8,4 +8,7 @@ import lombok.Data;
 public class TakeInfo {
     Long takeId;
     boolean possiblyLost;
+
+    public TakeInfo() {
+    }
 }

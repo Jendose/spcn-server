@@ -8,4 +8,6 @@ import lombok.Data;
 public class UpdateUserRequestDto {
     private Long userId;
 
+    public UpdateUserRequestDto() {
+    }
 }

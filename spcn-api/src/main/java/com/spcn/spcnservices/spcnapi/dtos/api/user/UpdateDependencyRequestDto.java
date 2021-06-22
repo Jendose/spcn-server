@@ -8,4 +8,6 @@ import lombok.Data;
 public class UpdateDependencyRequestDto {
     private Boolean isDependent;
 
+    public UpdateDependencyRequestDto() {
+    }
 }

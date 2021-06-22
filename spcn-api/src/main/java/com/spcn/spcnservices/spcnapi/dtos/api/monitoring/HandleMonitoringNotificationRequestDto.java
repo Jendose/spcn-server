@@ -7,4 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class HandleMonitoringNotificationRequestDto {
     private String email;
+
+    public HandleMonitoringNotificationRequestDto() {
+    }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public class TakeListDasDto {
     private List<TakeDasDto> takeList;
 
+    public TakeListDasDto() {
+    }
 }
