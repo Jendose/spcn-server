@@ -42,14 +42,13 @@ public class MonitoringApiService {
         monitoring.setCaretaker(new UserDasDto(data.getCaretakerId()));
         monitoring.setSpcOwner(new UserDasDto(data.getSpcOwnerId()));
         Boolean spcOwnerIsDependent = userDasService.getDependencyById(data.getSpcOwnerId());
-        if (spcOwnerIsDependent) {
+        if (spcOwnerIsDependent != null && spcOwnerIsDependent) {
             Boolean monitoringOfSpcOwnerExist = monitoringDasService.doesMonitoringWithSpcOwnerExist(data.getSpcOwnerId());
             if (!monitoringOfSpcOwnerExist) {
                 monitoring.setIsHost(true);
             }
-            monitoringDasService.saveMonitoring(monitoring);
         }
-
+        monitoringDasService.saveMonitoring(monitoring);
     }
 
     /**
